@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yuzo para Shopping Centers — Inteligência de Receita/m²</title>
+<style>
+  :root{
+    --ink:#16181d;
+    --ink-soft:#4b5563;
+    --paper:#faf9f6;
+    --card:#ffffff;
+    --line:#e5e2da;
+    --accent:#0e6b4f;
+    --accent-soft:#e7f2ee;
+    --money:#8a5a12;
+    --money-soft:#f7efe0;
+    --danger:#8f2d2d;
+    --danger-soft:#f8ecec;
+    --muted:#9aa1ab;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--paper);color:var(--ink);
+    line-height:1.55;font-size:16px;
+  }
+  .wrap{max-width:1060px;margin:0 auto;padding:0 28px;}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(14,107,79,.35);}
+  a:hover{border-bottom-color:var(--accent);}
+  h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:700;letter-spacing:-.01em;}
+  h2{font-size:1.7rem;margin-bottom:.35rem;}
+  h3{font-size:1.15rem;margin-bottom:.4rem;}
+  p{margin-bottom: .8rem;}
+  section{padding:44px 0;border-top:1px solid var(--line);}
+  .kicker{
+    text-transform:uppercase;letter-spacing:.14em;font-size:.72rem;font-weight:700;
+    color:var(--accent);margin-bottom:.6rem;font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  .lead{font-size:1.08rem;color:var(--ink-soft);max-width:56rem;}
+  .small{font-size:.85rem;color:var(--ink-soft);}
+  .tiny{font-size:.76rem;color:var(--muted);}
+
+  /* header */
+  header{padding:52px 0 40px;}
+  .ribbon{
+    display:inline-block;background:var(--danger-soft);color:var(--danger);
+    font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    padding:5px 12px;border-radius:999px;margin-bottom:20px;border:1px solid rgba(143,45,45,.25);
+  }
+  header h1{font-size:2.45rem;line-height:1.12;margin-bottom:14px;max-width:52rem;}
+  header h1 em{font-style:normal;color:var(--accent);}
+  .onesentence{
+    margin-top:22px;padding:20px 24px;background:var(--card);border:1px solid var(--line);
+    border-left:4px solid var(--accent);border-radius:8px;font-size:1.05rem;max-width:58rem;
+  }
+  .onesentence strong{color:var(--accent);}
+
+  /* pills of nots */
+  .nots{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+  .not{
+    font-size:.8rem;font-weight:600;color:var(--danger);
+    background:var(--danger-soft);border:1px solid rgba(143,45,45,.2);
+    padding:4px 12px;border-radius:999px;
+  }
+  .not::before{content:"✕ ";font-weight:800;}
+
+  /* north star */
+  .northgrid{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;margin-top:22px;}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:22px 24px;
+  }
+  .bignum{
+    font-family:Georgia,serif;font-size:2.9rem;color:var(--accent);line-height:1;
+    margin:6px 0 2px;
+  }
+  .ladder{display:flex;gap:8px;margin:14px 0 6px;align-items:flex-end;}
+  .rung{
+    flex:1;background:var(--accent-soft);border:1px solid rgba(14,107,79,.25);
+    border-radius:6px 6px 3px 3px;display:flex;align-items:flex-end;justify-content:center;
+    font-weight:700;color:var(--accent);font-size:.95rem;padding-bottom:6px;
+  }
+  .horizons{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px;}
+  .hz{
+    background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;
+    border-top:4px solid var(--accent);
+  }
+  .hz b{display:block;font-size:1rem;margin-bottom:4px;}
+  .hz .tag{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);font-weight:800;}
+
+  /* documents view */
+  .docflow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0;align-items:stretch;margin-top:22px;}
+  .doccol{display:flex;flex-direction:column;gap:8px;}
+  .doc{
+    background:var(--card);border:1px solid var(--line);border-radius:8px;
+    padding:10px 14px;font-size:.86rem;position:relative;
+    box-shadow:0 1px 0 rgba(0,0,0,.03);
+  }
+  .doc::before{content:"📄";margin-right:8px;}
+  .doc.exp::before{content:"⬇︎";color:var(--accent);font-weight:800;}
+  .arrowcol{display:flex;align-items:center;justify-content:center;padding:0 14px;color:var(--muted);font-size:1.5rem;}
+  .packbox{
+    background:linear-gradient(180deg,#0e6b4f,#0a533d);color:#fff;border-radius:10px;
+    padding:18px;display:flex;flex-direction:column;justify-content:center;gap:6px;
+  }
+  .packbox b{font-size:1.02rem;}
+  .packbox span{font-size:.8rem;opacity:.85;}
+  .judg{
+    background:var(--money-soft);border:1px solid rgba(138,90,18,.3);border-radius:8px;
+    padding:10px 14px;font-size:.86rem;
+  }
+  .judg b{color:var(--money);}
+  .evid{font-size:.72rem;color:var(--muted);display:block;margin-top:3px;}
+
+  /* mix bars */
+  .mixbar{display:flex;height:52px;border-radius:8px;overflow:hidden;border:1px solid var(--line);margin:14px 0 8px;}
+  .seg{display:flex;align-items:center;justify-content:center;color:#fff;font-size:.72rem;font-weight:700;white-space:nowrap;overflow:hidden;}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;}
+  .legend span{font-size:.78rem;color:var(--ink-soft);display:flex;align-items:center;gap:6px;}
+  .swatch{width:11px;height:11px;border-radius:3px;display:inline-block;}
+  .halfline{
+    display:flex;justify-content:space-between;margin-top:4px;font-size:.8rem;font-weight:700;
+  }
+  .growth{margin-top:10px;}
+  .growrow{display:grid;grid-template-columns:220px 1fr 64px;align-items:center;gap:10px;margin-bottom:7px;font-size:.83rem;}
+  .growtrack{background:#efece4;border-radius:4px;height:14px;position:relative;}
+  .growfill{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--accent);}
+  .growfill.lease{background:#9aa1ab;}
+  .growval{font-weight:700;text-align:right;font-variant-numeric:tabular-nums;}
+  .ipca{border-left:2px dashed var(--danger);position:absolute;top:-3px;bottom:-3px;}
+
+  /* jobs */
+  .jobs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px;}
+  .job{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;}
+  .jobhead{background:var(--ink);color:#fff;padding:14px 18px;}
+  .jobhead .n{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;opacity:.7;font-weight:700;}
+  .jobhead b{display:block;font-size:1.02rem;font-family:Georgia,serif;margin-top:2px;}
+  .jobbody{padding:16px 18px;display:flex;flex-direction:column;gap:12px;flex:1;}
+  .q{font-size:.9rem;font-style:italic;color:var(--ink-soft);border-left:3px solid var(--accent);padding-left:10px;}
+  .jb{font-size:.83rem;}
+  .jb b{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:3px;}
+  .phasegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+  .ph{background:var(--accent-soft);border-radius:6px;padding:8px 9px;font-size:.75rem;}
+  .ph b{display:block;font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:2px;}
+  .unit{
+    margin-top:auto;background:var(--money-soft);border-top:1px solid rgba(138,90,18,.25);
+    padding:10px 18px;font-size:.8rem;color:var(--money);font-weight:700;
+  }
+
+  /* paper walk */
+  table{width:100%;border-collapse:collapse;margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  th{
+    text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;
+    background:var(--ink);color:#fff;padding:10px 14px;font-weight:700;
+  }
+  td{padding:10px 14px;border-top:1px solid var(--line);font-size:.86rem;vertical-align:top;}
+  td:first-child{font-weight:600;width:34%;}
+  .badge{display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 9px;border-radius:999px;margin-right:6px;}
+  .b-v1{background:var(--accent-soft);color:var(--accent);border:1px solid rgba(14,107,79,.3);}
+  .b-later{background:#eef1f6;color:#44506b;border:1px solid #ccd4e2;}
+  .b-out{background:var(--danger-soft);color:var(--danger);border:1px solid rgba(143,45,45,.25);}
+
+  /* chain */
+  .chain{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0;align-items:center;margin-top:22px;}
+  .actor{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;text-align:center;}
+  .actor b{font-family:Georgia,serif;font-size:1.05rem;display:block;}
+  .actor.buyer{border:2px solid var(--accent);background:var(--accent-soft);}
+  .actor .role{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:800;}
+  .actor p{font-size:.8rem;color:var(--ink-soft);margin:.4rem 0 0;}
+  .chainarrow{text-align:center;color:var(--muted);font-size:1.3rem;padding:0 12px;}
+
+  /* phases strip */
+  .fases{display:grid;grid-template-columns:1.2fr .5fr 1.2fr;gap:12px;margin-top:20px;align-items:stretch;}
+  .fase{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;}
+  .fase.now{border:2px solid var(--accent);}
+  .fase .fnum{font-family:Georgia,serif;font-size:1.6rem;color:var(--accent);}
+  .fasedots{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:1.4rem;letter-spacing:.3em;}
+
+  /* antipatterns */
+  .antigrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px;}
+  .anti{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--danger);border-radius:8px;padding:14px 16px;font-size:.87rem;}
+  .anti b{color:var(--danger);display:block;margin-bottom:3px;}
+  .anti .ok{color:var(--accent);font-weight:600;}
+
+  /* out list */
+  .outgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px;}
+  .outitem{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;font-size:.87rem;}
+  .outitem b{color:var(--danger);}
+
+  ol.qs{margin:16px 0 0 20px;}
+  ol.qs li{margin-bottom:10px;font-size:.93rem;}
+
+  ul.srcs{margin:14px 0 0 20px;}
+  ul.srcs li{margin-bottom:7px;font-size:.85rem;}
+
+  footer{padding:36px 0 60px;border-top:1px solid var(--line);}
+
+  @media (max-width:860px){
+    .northgrid,.jobs,.antigrid,.outgrid{grid-template-columns:1fr;}
+    .horizons{grid-template-columns:1fr;}
+    .docflow,.chain,.fases{grid-template-columns:1fr;}
+    .arrowcol,.chainarrow,.fasedots{transform:rotate(90deg);padding:8px 0;}
+    .growrow{grid-template-columns:130px 1fr 54px;}
+  }
+  @media print{
+    body{background:#fff;font-size:12px;}
+    section{padding:22px 0;page-break-inside:avoid;}
+    .job,.card,table,.anti{page-break-inside:avoid;}
+    a{color:var(--ink);border-bottom:none;}
+    .ribbon{border:1px solid var(--danger);}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="ribbon">Research only · sem código de produto · sem feature de mall</div>
+    <div class="kicker">Yuzo · Vertical 2 · resposta ao paper "AI Value Partner" (ago 2026)</div>
+    <h1>O shopping como portfólio de fluxos de caixa.<br>Yuzo é a camada que julga <em>cada m²</em>.</h1>
+    <p class="lead">O paper diz: o gap não é mais modelos — é um operador que assume responsabilidade de P&amp;L. CRM e ERP já são donos dos dados. Este documento mostra o produto que responde a isso: uma camada de inteligência, ancorada em documentos, cuja estrela-norte é <strong>receita por m² de ABL</strong>.</p>
+    <div class="onesentence">
+      <strong>O produto em uma frase:</strong> Yuzo lê o que o shopping já produz — contratos, faturamento declarado, fechamentos de estacionamento, bookings de mídia, aging, DRE — e mantém, por ativo e por linha de receita, um julgamento com evidências do passado, do presente e do futuro da receita/m², construído para empurrar esse número em 1, 2, 3, 5, 10%.
+    </div>
+    <div class="nots">
+      <span class="not">sistema de registro</span>
+      <span class="not">CRM</span>
+      <span class="not">dashboard de BI</span>
+      <span class="not">sala de controle / mural de mapas</span>
+      <span class="not">sensores / CCTV / IoT</span>
+      <span class="not">alertas de calendário 90/60/30</span>
+    </div>
+  </div>
+</header>
+
+<section id="northstar">
+  <div class="wrap">
+    <div class="kicker">Estrela-norte</div>
+    <h2>Receita/m²: a métrica que iguala aluguel e tudo o mais</h2>
+    <p class="lead">Um real vindo de aluguel mínimo, de aluguel percentual, de um quiosque, de um ticket de estacionamento ou de uma tela de mídia vale o mesmo. A métrica não é invenção nossa — é como o setor já se mede, então o output do Yuzo entra no placar existente.</p>
+    <div class="northgrid">
+      <div class="card">
+        <div class="kicker">A escada de lift (framing interno do paper)</div>
+        <div class="ladder">
+          <div class="rung" style="height:34px">+1%</div>
+          <div class="rung" style="height:46px">+2%</div>
+          <div class="rung" style="height:58px">+3%</div>
+          <div class="rung" style="height:78px">+5%</div>
+          <div class="rung" style="height:110px">+10%</div>
+        </div>
+        <p class="small">O setor encolhe em termos reais: vendas de lojistas +1,2% nominal em 2025 contra inflação de 4,26%, com ABL ainda crescendo 0,9% <a href="https://valor.globo.com/empresas/noticia/2026/02/04/shoppings-do-pais-tem-crescimento-magro-em-2025-e-mais-da-metade-ja-esta-localizada-fora-das-capitais.ghtml">(Valor/Abrasce)</a>. Quem não pode adicionar m² precisa fazer cada m² render mais.</p>
+      </div>
+      <div class="card">
+        <div class="kicker">O setor já mede assim</div>
+        <div class="bignum">R$ 703/m²</div>
+        <p class="small">Aluguel/m² trimestral reportado pela Iguatemi no 2T26 (+11,8% a.a.), definido no glossário da própria companhia como <em>"aluguel mínimo, overage e locação temporária dividido pela ABL total"</em> — fixo, variável e temporário já misturados <a href="https://investidor10.com.br/acoes/link_comunicado/IGTI3/46858/">(release 2T26)</a>.</p>
+        <p class="small">FIIs de shopping são julgados por NOI/m²: a Capitânia Shoppings divulga NOI de R$ 2.001/m² LTM sobre vendas de R$ 23.456/m² <a href="https://capitaniafii.com.br/wp-content/uploads/CPSH11/rel_mensal/2026/CPSH11_RMG_01_2026.pdf">(CPSH11)</a>.</p>
+      </div>
+    </div>
+    <div class="horizons">
+      <div class="hz">
+        <span class="tag">Horizonte 1 · Passado</span>
+        <b>Decifrar</b>
+        <p class="small">Onde cada m² rendeu menos do que o próprio contrato e o próprio histórico dizem que deveria — evidenciado cláusula a cláusula, export a export.</p>
+      </div>
+      <div class="hz">
+        <span class="tag">Horizonte 2 · Tempo real</span>
+        <b>Operar</b>
+        <p class="small">"Tempo real" = a cadência dos documentos que o shopping já produz. Portal de faturamento diário, fechamentos mensais. O feed atualiza → o pack re-julga → a posição muda só se a evidência mudou.</p>
+      </div>
+      <div class="hz">
+        <span class="tag">Horizonte 3 · Futuro</span>
+        <b>Prever</b>
+        <p class="small">Trajetória de receita/m² por ativo, risco de quebra de lojista, valor esperado de cada nudge — preditivo está no v1, não depois.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="docsview">
+  <div class="wrap">
+    <div class="kicker">A visão de documentos (lock)</div>
+    <h2>A unidade de trabalho é um julgamento sobre documento</h2>
+    <p class="lead">Contrato, cláusula, export, fechamento. Nada de telemetria, nada de mock de operação ao vivo. Cada número do output aponta de volta para o documento-fonte que o sustenta.</p>
+    <div class="docflow">
+      <div class="doccol">
+        <div class="doc">Contrato de locação (mínimo, faixas, % , CTO, reajuste, exclusividade)</div>
+        <div class="doc exp">Faturamento declarado — portal diário do ERP <a class="tiny" href="https://www.totvs.com/blog/gestao-para-construcao/administracao-de-shopping/">(TOTVS)</a></div>
+        <div class="doc exp">Aging / inadimplência</div>
+        <div class="doc exp">Fechamento de estacionamento (fluxo, tarifas)</div>
+        <div class="doc exp">Bookings de mídia · contratos de locação temporária</div>
+        <div class="doc exp">DRE mensal por shopping · orçamento</div>
+      </div>
+      <div class="arrowcol">→</div>
+      <div class="doccol" style="justify-content:center">
+        <div class="packbox">
+          <b>Pack Yuzo "malls-br"</b>
+          <span>config + conteúdo, não fork (padrão de <code>verticals/</code>): taxonomia de cláusulas, formatos de export, benchmarks, templates de julgamento, scoring em R$/m²</span>
+          <span>Conductor orquestra · Agents re-julgam a cada refresh · tudo no chat/workspace da org</span>
+        </div>
+      </div>
+      <div class="arrowcol">→</div>
+      <div class="doccol">
+        <div class="judg"><b>Posição:</b> "esta loja deve R$ X de aluguel percentual não capturado" <span class="evid">evidência: cláusula 4.2 + exports mai–jul</span></div>
+        <div class="judg"><b>Dossiê:</b> "na renovação, peça +Y% real; risco de saída baixo" <span class="evid">evidência: custo de ocupação vs categoria + aging limpo</span></div>
+        <div class="judg"><b>Mapa:</b> "os m² mais fracos deste ativo são o corredor B e a linha de mídia" <span class="evid">evidência: DRE + rent roll + benchmark ICVS</span></div>
+      </div>
+    </div>
+    <p class="small" style="margin-top:14px">Postura de leitura: v1 roda sobre exports (mesma postura do tax-br hoje — fontes públicas + uploads do cliente). Conector vivo com o ERP é uma decisão adiada, não uma premissa.</p>
+  </div>
+</section>
+
+<section id="mix">
+  <div class="wrap">
+    <div class="kicker">A hipótese dos ~50/50 — checada nos releases do 2T26</div>
+    <h2>Metade da receita não é aluguel fixo. Confirmado — na leitura certa.</h2>
+    <p class="lead">A Iguatemi é a única listada com abertura pública linha a linha da receita bruta. Resultado: <strong>aluguel mínimo = 49,4%</strong>. Todo o resto — percentual, temporária, taxa de administração, estacionamento, varejo próprio — é os outros 50,6% <a href="https://investidor10.com.br/acoes/link_comunicado/IGTI3/46858/">(DRE gerencial 2T26)</a>.</p>
+
+    <div class="card">
+      <h3>Iguatemi 2T26 — receita bruta R$ 441,4 mi</h3>
+      <div class="mixbar">
+        <div class="seg" style="width:49.4%;background:#16181d">mínimo 49,4%</div>
+        <div class="seg" style="width:6.7%;background:#0e6b4f">% 6,7</div>
+        <div class="seg" style="width:7.1%;background:#2f8f6f">temp. 7,1</div>
+        <div class="seg" style="width:5.4%;background:#8a5a12">adm 5,4</div>
+        <div class="seg" style="width:14.8%;background:#b07b23">estac. 14,8%</div>
+        <div class="seg" style="width:15.2%;background:#44506b">varejo 15,2%</div>
+        <div class="seg" style="width:1.4%;background:#9aa1ab"></div>
+      </div>
+      <div class="halfline">
+        <span style="color:#16181d">◀ aluguel fixo: 49,4%</span>
+        <span style="color:var(--money)">variável + não-locação: 50,6% ▶</span>
+      </div>
+      <div class="legend">
+        <span><i class="swatch" style="background:#16181d"></i>Aluguel mínimo R$ 217,9 mi</span>
+        <span><i class="swatch" style="background:#0e6b4f"></i>Aluguel percentual R$ 29,7 mi</span>
+        <span><i class="swatch" style="background:#2f8f6f"></i>Locação temporária R$ 31,1 mi</span>
+        <span><i class="swatch" style="background:#8a5a12"></i>Taxa de administração R$ 23,9 mi</span>
+        <span><i class="swatch" style="background:#b07b23"></i>Estacionamento R$ 65,4 mi</span>
+        <span><i class="swatch" style="background:#44506b"></i>Varejo próprio (I-Retail/365) R$ 67,1 mi</span>
+        <span><i class="swatch" style="background:#9aa1ab"></i>Outros R$ 6,2 mi</span>
+      </div>
+      <p class="small" style="margin-top:10px">Na leitura larga (toda locação — mínimo + percentual + temporária = 63,2% — vs o resto), não-locação é ~1/3, não metade. Nas outras listadas só há abertura parcial: <strong>Allos</strong> — locação R$ 498,7 mi (~64% das linhas reportadas), estacionamento R$ 132,8 mi, serviços R$ 115,9 mi, outras R$ 30,9 mi; mídia (helloo) já é 10,6% da receita total <a href="https://www.estadao.com.br/einvestidor/cenarios-e-mercado/allos-alos3-aumenta-lucro-em-58-e-colhe-resultados-de-aposta-em-midia-e-eficiencia/">(Estadão)</a>, <a href="https://www.prnewswire.com/br/comunicados-para-a-imprensa/ffo-acelera-no-2t26-e-cresce-12-302845579.html">(release)</a>. <strong>Multiplan</strong> — locação R$ 441,3 mi (~75% das três linhas), estacionamento R$ 98,7 mi, serviços R$ 51,2 mi <a href="https://renovainvest.com.br/blog/multiplan-2t26/">(Renova)</a>. Nos dois casos a linha "locação" mistura fixo e percentual — o fixo puro é menor que o reportado. <strong>SYN</strong> — operadora mista com shoppings como carro-chefe: margem EBITDA ajustada de 42,9%, que sobe a 65,9% excluindo a operação de estacionamento Park Place: uma linha não-locação balança o P&amp;L inteiro <a href="https://visnoinvest.com.br/news/14818/syn-prop-tech-syne3-registra-lucro-de-r-54-mi-no-2t26">(Visno)</a>.</p>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3>E o crescimento vem de onde? Das linhas variáveis e não-locação (2T26, var. a.a.)</h3>
+      <div class="growth">
+        <div class="growrow"><span>Multiplan · locação</span><div class="growtrack"><div class="growfill lease" style="width:3.8%"></div><div class="ipca" style="left:5.4%"></div></div><span class="growval">+3,2%</span></div>
+        <div class="growrow"><span>Multiplan · estacionamento</span><div class="growtrack"><div class="growfill" style="width:20%"></div></div><span class="growval">+17,0%</span></div>
+        <div class="growrow"><span>Multiplan · serviços</span><div class="growtrack"><div class="growfill" style="width:22.7%"></div></div><span class="growval">+19,3%</span></div>
+        <div class="growrow"><span>Allos · locação</span><div class="growtrack"><div class="growfill lease" style="width:3.1%"></div><div class="ipca" style="left:5.4%"></div></div><span class="growval">+2,6%</span></div>
+        <div class="growrow"><span>Allos · serviços</span><div class="growtrack"><div class="growfill" style="width:46.6%"></div></div><span class="growval">+39,6%</span></div>
+        <div class="growrow"><span>Allos · mídia (helloo)</span><div class="growtrack"><div class="growfill" style="width:99.4%"></div></div><span class="growval">+84,5%</span></div>
+        <div class="growrow"><span>Iguatemi · aluguel mínimo*</span><div class="growtrack"><div class="growfill lease" style="width:5.6%"></div><div class="ipca" style="left:5.4%"></div></div><span class="growval">+4,8%</span></div>
+        <div class="growrow"><span>Iguatemi · aluguel percentual*</span><div class="growtrack"><div class="growfill" style="width:13.5%"></div></div><span class="growval">+11,5%</span></div>
+        <div class="growrow"><span>Iguatemi · estacionamento*</span><div class="growtrack"><div class="growfill" style="width:14.6%"></div></div><span class="growval">+12,4%</span></div>
+        <div class="growrow"><span>Iguatemi · locação temporária*</span><div class="growtrack"><div class="growfill" style="width:21.4%"></div></div><span class="growval">+18,2%</span></div>
+        <div class="growrow"><span>Iguatemi · varejo próprio</span><div class="growtrack"><div class="growfill" style="width:30.4%"></div></div><span class="growval">+25,8%</span></div>
+      </div>
+      <p class="tiny">* pro forma. Linha tracejada vermelha ≈ IPCA 12m de 4,6% usado pelas companhias nos releases. Fontes: <a href="https://timesbrasil.com.br/brasil/multiplan-tem-lucro-de-r-427-milhoes-no-trimestre-e-registra-terceiro-maior-resultado-da-historia/">Times Brasil (Multiplan)</a>, <a href="https://www.estadao.com.br/einvestidor/cenarios-e-mercado/allos-alos3-aumenta-lucro-em-58-e-colhe-resultados-de-aposta-em-midia-e-eficiencia/">Estadão (Allos)</a>, <a href="https://www.prnewswire.com/br/comunicados-para-a-imprensa/ffo-acelera-no-2t26-e-cresce-12-302845579.html">release Allos</a>, <a href="https://investidor10.com.br/acoes/link_comunicado/IGTI3/46858/">release Iguatemi</a>.</p>
+      <p class="small"><strong>Implicação de produto (lock):</strong> as linhas não-locação são cidadãs de primeira classe do julgamento de receita/m². Um produto que só lê contratos de aluguel é cego para metade da receita na leitura estrita — e para a maior parte do crescimento em qualquer leitura.</p>
+    </div>
+  </div>
+</section>
+
+<section id="jobs">
+  <div class="wrap">
+    <div class="kicker">Fase 1 = 2–3 jornadas (paper)</div>
+    <h2>Os três jobs do v1 — cada um com passado / tempo real / futuro, tudo em R$/m²</h2>
+    <div class="jobs">
+
+      <div class="job">
+        <div class="jobhead"><span class="n">Job 1 · a metade locação</span><b>Verdade do aluguel &amp; posição de renovação</b></div>
+        <div class="jobbody">
+          <div class="q">"Cada m² ocupado rende o que o próprio contrato diz que deveria — e o que eu exijo na próxima renovação?"</div>
+          <div class="jb"><b>Documentos lidos</b>Contrato (cláusulas de mínimo, faixas, %, exclusões, CTO, índice), faturamento declarado no portal do ERP, aging, benchmarks da própria carteira. A doutrina brasileira reconhece o direito de fiscalizar o faturamento do lojista exatamente porque ele pode subdeclarar receita bruta para pagar menos aluguel percentual <a href="https://jus.com.br/artigos/30217/locacao-em-shopping-center-e-fiscalizacao-sobre-o-faturamento-do-lojista/3">(Jus.com.br)</a>; com a plataforma fiscal digital de 2026 (IBS/CBS), subdeclarar vira prejuízo tributário e divergências ficam prováveis por documento <a href="https://revistashoppingcenters.com.br/artigo/reforma-tributaria-nova-dinamica-fiscal/">(Revista Shopping Centers)</a>.</div>
+          <div class="phasegrid">
+            <div class="ph"><b>Passado</b>Gap entre direito contratual e aluguel realizado, em R$/m², loja a loja — descontos, % nunca disparado, exclusões que derivaram.</div>
+            <div class="ph"><b>Tempo real</b>Cada ciclo de faturamento re-pontua; divergência vira dossiê de auditoria com valor recuperável estimado e a cláusula citada.</div>
+            <div class="ph"><b>Futuro</b>Posição de renovação: R$/m² esperado por cenário, risco de saída, custo de vacância vs concessão. (Referência do que a disciplina captura: % pro forma da Iguatemi +11,5% com mínimo +4,8% <a href="https://investidor10.com.br/acoes/link_comunicado/IGTI3/46858/">↗</a>.)</div>
+          </div>
+        </div>
+        <div class="unit">Unidade econômica (paper): aluguel maior · valores recuperados</div>
+      </div>
+
+      <div class="job">
+        <div class="jobhead"><span class="n">Job 2 · a outra metade</span><b>Yield não-locação: estacionamento, mídia, temporária</b></div>
+        <div class="jobbody">
+          <div class="q">"Quanto cada linha não-locação rende por m² (ou por vaga, por tela, por corredor-semana) — e onde está mal precificada?"</div>
+          <div class="jb"><b>Documentos lidos</b>Fechamentos de estacionamento (fluxo, tabela tarifária), bookings e rate cards de mídia, contratos de locação temporária e calendário de eventos, contas do fundo promocional, DRE mensal.</div>
+          <div class="phasegrid">
+            <div class="ph"><b>Passado</b>Quais linhas sub-renderam por m² vs a própria carteira e vs o que as listadas extraíram da mesma alavanca: Multiplan +17% em estacionamento com fluxo +3,5% e revisão tarifária; Iguatemi +12,4% pro forma com fluxo estável — <em>preço fez o trabalho, não tráfego</em> <a href="https://timesbrasil.com.br/brasil/multiplan-tem-lucro-de-r-427-milhoes-no-trimestre-e-registra-terceiro-maior-resultado-da-historia/">↗</a> <a href="https://investidor10.com.br/acoes/link_comunicado/IGTI3/46858/">↗</a>.</div>
+            <div class="ph"><b>Tempo real</b>Cada fechamento mensal re-pontua a linha: ocupação da grade de quiosques, taxa realizada vs rate card, yield por faixa tarifária — interrompe só se o julgamento mudou.</div>
+            <div class="ph"><b>Futuro</b>Recomendação precificada: "revisão tarifária nas faixas de dia útil vale ≈X R$/m²/ano; a grade de quiosques do corredor B está subvendida contra o calendário de eventos". Teto comprovado: mídia virou 10,6% da receita da Allos <a href="https://www.prnewswire.com/br/comunicados-para-a-imprensa/ffo-acelera-no-2t26-e-cresce-12-302845579.html">↗</a>.</div>
+          </div>
+        </div>
+        <div class="unit">Unidade econômica (paper): NOI melhor · receita/m² em linhas de custo marginal ~zero</div>
+      </div>
+
+      <div class="job">
+        <div class="jobhead"><span class="n">Job 3 · a ótica do investidor</span><b>Mapa do ativo: m² mais fracos, próximas quebras, visão FII</b></div>
+        <div class="jobbody">
+          <div class="q">"Somando tudo — locação, estacionamento, mídia, temporária — onde este shopping é mais fraco por m², quais fluxos morrem em seguida e que sequência de nudges mais sobe a receita/m²?"</div>
+          <div class="jb"><b>Documentos lidos</b>Fechamento mensal completo (DRE, rent roll, aging, vendas, outputs dos Jobs 1–2), orçamento, e benchmarks externos que o operador já usa (ICVS Cielo/Abrasce, citado pela própria Iguatemi <a href="https://investidor10.com.br/acoes/link_comunicado/IGTI3/46858/">↗</a>).</div>
+          <div class="phasegrid">
+            <div class="ph"><b>Passado</b>Receita/m² decomposta por loja, categoria, corredor e linha vs histórico e carteira; os "m² mais fracos" ranqueados com os documentos que provam.</div>
+            <div class="ph"><b>Tempo real</b>Cada fechamento atualiza o mapa; sinais de estresse visíveis em documento (loja que paga aluguel mas atrasa condomínio aparece no aging). Régua de honestidade: inadimplência nacional 4,3% <a href="https://www.cnnbrasil.com.br/economia/faturamento-dos-shoppings-cresce-12-em-2025-para-r-2009-bi-diz-abrasce/">(Abrasce)</a> vs líquida de −1,2% na Multiplan <a href="https://timesbrasil.com.br/brasil/multiplan-tem-lucro-de-r-427-milhoes-no-trimestre-e-registra-terceiro-maior-resultado-da-historia/">↗</a> — o spread é o headroom.</div>
+            <div class="ph"><b>Futuro</b>Trajetória prevista de receita/m² por ativo; risco de quebra ranqueado com custo (aluguel + condomínio + fundo); perfil de substituto que maximiza o mix; lista de nudges com delta em R$/m². Nos EUA esse formato já se vende (CFS: probabilidade de fechamento 6–18 meses antes; Placer: void analysis) <a href="https://cfsnnn.com/">↗</a> <a href="https://www.placer.ai/solutions/cre">↗</a> — nenhum deles lê contrato, aging e DRE de administradora brasileira.</div>
+          </div>
+          <div class="jb"><b>Output FII (mesmos documentos, ótica de investidor)</b>Visão nível relatório gerencial: fluxo de caixa por ativo, NOI/m², ativos mais fracos, o que subiria a receita/m² — o formato da conversa mensal que a administradora já tem com gestoras <a href="https://pt.scribd.com/document/980518055/Relatorio-Gerencial-Outubro">(XP Malls)</a> <a href="https://capitaniafii.com.br/wp-content/uploads/CPSH11/rel_mensal/2026/CPSH11_RMG_01_2026.pdf">(CPSH11)</a>.</div>
+        </div>
+        <div class="unit">Unidade econômica (paper): vacância menor · inadimplência menor · NOI melhor</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="buyer">
+  <div class="wrap">
+    <div class="kicker">Comprador</div>
+    <h2>Primeiro contrato: a administradora multi-shopping. O FII é o cliente do cliente.</h2>
+    <div class="chain">
+      <div class="actor">
+        <span class="role">contraparte</span>
+        <b>Lojista</b>
+        <p>Declara faturamento, negocia renovação. As grandes já o servem de graça (Multiplan "Conheça seus Clientes", 4,2 mil lojistas <a href="https://mercadoeconsumo.com.br/11/06/2025/shopping-centers/multiplan-lanca-ferramenta-de-inteligencia-de-dados-para-fortalecer-relacao-com-lojistas/">↗</a>). Plataforma lojista = Path E, depois.</p>
+      </div>
+      <div class="chainarrow">→</div>
+      <div class="actor buyer">
+        <span class="role">comprador v1</span>
+        <b>Administradora multi-shopping</b>
+        <p>Receita fina, margem fina, paga para espremer ativos que não são dela — tudo que se extrai do ativo importa. Mercado real: até a Allos administra 6 shoppings de terceiros (207,6 mil m²) <a href="https://www.prnewswire.com/br/comunicados-para-a-imprensa/ffo-acelera-no-2t26-e-cresce-12-302845579.html">↗</a>; a Iguatemi fatura R$ 23,9 mi/tri de taxa de administração <a href="https://investidor10.com.br/acoes/link_comunicado/IGTI3/46858/">↗</a>. Pool endereçável: 658 shoppings, &gt;60% pequenos/médios, maioria fora das capitais <a href="https://valor.globo.com/empresas/noticia/2026/02/04/shoppings-do-pais-tem-crescimento-magro-em-2025-e-mais-da-metade-ja-esta-localizada-fora-das-capitais.ghtml">↗</a>. Não as gigantes listadas: elas têm bancada própria de dados (Multi: 8,5 mi+ downloads <a href="https://www.multiplan.com.br/dicas-e-novidades/post/multiplan-unifica-marca-multi-e-reforca-experienci/">↗</a>).</p>
+      </div>
+      <div class="chainarrow">→</div>
+      <div class="actor">
+        <span class="role">cliente do cliente</span>
+        <b>FII / dono do ativo</b>
+        <p>Julga a administradora todo mês pelo relatório gerencial (NOI/m², vacância, SSS) e recicla portfólio ativamente <a href="https://pt.scribd.com/document/980518055/Relatorio-Gerencial-Outubro">(XP Malls)</a>. O Job 3 produz a visão que ele quer — vendida <em>para a administradora</em>, que a usa para operar e para defender o mandato. Vender direto ao FII é contrato posterior, não capacidade posterior.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="paperwalk">
+  <div class="wrap">
+    <div class="kicker">Andando pelo paper, ponto a ponto</div>
+    <h2>Cada tese do "AI Value Partner" → a resposta do Yuzo (ou um fora-de-escopo explícito)</h2>
+
+    <div class="fases">
+      <div class="fase now">
+        <div class="fnum">Fase 1</div>
+        <b>2–3 jornadas, um tipo de ativo, P&amp;L na mesa</b>
+        <p class="small">Jobs 1–3 acima, vendidos a administradoras multi-shopping, com componente de performance atrelado a receita/m². Provar lift auditável antes de ampliar.</p>
+      </div>
+      <div class="fasedots">···</div>
+      <div class="fase">
+        <div class="fnum">Fase 4</div>
+        <b>Parceiro de valor com responsabilidade de P&amp;L</b>
+        <p class="small">O destino do paper: orçamento/forecast por shopping, comparação cross-asset, portfólio inteiro sob a mesma disciplina de julgamento — inclusive as vias D (portfólio PE/FII) e E (plataforma lojista), <em>depois</em> de a Fase 1 pagar a conta.</p>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>Job do paper</th><th>Resposta</th></tr>
+      <tr><td>Auditoria de aluguel percentual</td><td><span class="badge b-v1">v1 · Job 1</span> dossiê de auditoria com valor recuperável, evidenciado a cláusula + exports</td></tr>
+      <tr><td>Negociação / renovação de contrato</td><td><span class="badge b-v1">v1 · Job 1</span> posição de renovação em R$/m² por cenário</td></tr>
+      <tr><td>Leitura de cláusulas</td><td><span class="badge b-v1">v1 · dentro dos Jobs 1–3</span> insumo de todo julgamento — não é feature isolada ("clause pack" morreu com a primeira foto)</td></tr>
+      <tr><td>Inadimplência + cobrança</td><td><span class="badge b-v1">v1 · Job 3</span> priorização de cobrança pelo aging, com custo de cada quebra</td></tr>
+      <tr><td>Análise de vendas / tráfego</td><td><span class="badge b-v1">v1 · insumo</span> alimenta os três jobs; não é produto standalone (Placer já vende tráfego <a href="https://www.placer.ai/solutions/cre">↗</a>)</td></tr>
+      <tr><td>Vacância e mix ótimo de lojas</td><td><span class="badge b-v1">v1 · Job 3</span> próxima quebra + perfil de substituto + delta R$/m²</td></tr>
+      <tr><td>Prospecção de lojistas</td><td><span class="badge b-later">depois</span> nasce do perfil de substituto do Job 3; outbound ativo não é Fase 1</td></tr>
+      <tr><td>Orçamento / forecast por shopping</td><td><span class="badge b-later">depois</span> cresce do fechamento mensal que o Job 3 já lê</td></tr>
+      <tr><td>Comparação cross-asset</td><td><span class="badge b-later">depois</span> automática quando ≥2 administradoras rodam; vira produto Path D</td></tr>
+      <tr><td>Campanhas / marketing</td><td><span class="badge b-later">depois</span> a mídia entra no v1 como <em>linha de receita a precificar</em> (Job 2), não como operação de campanha — operação é das casas (helloo, Multi <a href="https://oglobo.globo.com/economia/noticia/2025/11/26/na-palma-da-mao-shoppings-se-rendem-a-inteligencia-digital-em-busca-de-engajamento.ghtml">↗</a>)</td></tr>
+      <tr><td>Compras / manutenção (despesa condominial)</td><td><span class="badge b-later">depois</span> gancho "condomínio menor" do paper fica honesto: fora da Fase 1</td></tr>
+      <tr><th>Gancho de compensação (paper)</th><th>Onde aparece</th></tr>
+      <tr><td>Aluguel maior · valores recuperados</td><td><span class="badge b-v1">Job 1</span></td></tr>
+      <tr><td>NOI melhor · receita não-locação</td><td><span class="badge b-v1">Job 2</span></td></tr>
+      <tr><td>Vacância menor · inadimplência menor</td><td><span class="badge b-v1">Job 3</span></td></tr>
+      <tr><td>Despesa condominial menor</td><td><span class="badge b-later">depois</span> (job de compras/manutenção)</td></tr>
+      <tr><th>Estrutura (paper)</th><th>Posição</th></tr>
+      <tr><td>Path D — portfólio PE/FII</td><td><span class="badge b-later">depois como contrato</span> <span class="badge b-v1">v1 como output</span> a visão FII sai do Job 3 hoje; vender direto a fundos vem depois</td></tr>
+      <tr><td>Path E — plataforma / JV lojista</td><td><span class="badge b-out">fora</span> compete com a plataforma do próprio landlord e depende dos dados dele</td></tr>
+      <tr><td>Preço: fee + sucesso</td><td><span class="badge b-v1">v1</span> fee fixo por shopping + componente de performance por job (share de recuperação no Job 1, share de uplift no Job 2/3). <em>Success-fee-only é antipadrão nomeado — recusado.</em></td></tr>
+    </table>
+
+    <h3 style="margin-top:28px">Os antipadrões do paper — e como esta foto não cai neles</h3>
+    <div class="antigrid">
+      <div class="anti"><b>"Estratégia de IA" genérica</b>Três jobs com pergunta, documento, output e unidade econômica nomeados. Nada de "transformação".<div class="ok">✓ evitado</div></div>
+      <div class="anti"><b>Plataforma horizontal de agentes</b>Um pack vertical (padrão <code>verticals/</code> já com 3 packs no ar), um tipo de ativo, um KPI.<div class="ok">✓ evitado</div></div>
+      <div class="anti"><b>Construir tech antes do problema econômico</b>V1 roda sobre exports que o ERP já emite; conector é decisão adiada. O problema econômico (receita/m² real caindo no setor <a href="https://valor.globo.com/empresas/noticia/2026/02/04/shoppings-do-pais-tem-crescimento-magro-em-2025-e-mais-da-metade-ja-esta-localizada-fora-das-capitais.ghtml">↗</a>) vem primeiro.<div class="ok">✓ evitado</div></div>
+      <div class="anti"><b>Success-fee-only</b>Fee fixo + performance. Skin in the game sem virar aventureiro.<div class="ok">✓ evitado</div></div>
+      <div class="anti"><b>Automatizar um processo ruim</b>Não automatizamos o lembrete de renovação (o ERP já faz <a href="https://community.sap.com/t5/financial-management-blog-posts-by-members/refx-processing-real-estate-contracts/ba-p/13208601">↗</a>); substituímos a <em>ausência de posição</em>, que não é processo — é lacuna.<div class="ok">✓ evitado</div></div>
+      <div class="anti"><b>Reconstruir o CRM/ERP</b>TOTVS/Yardi/MRI/SAP já calculam % rent, faixas, CTO, cobrança <a href="https://produtos.totvs.com/ficha-tecnica/tudo-sobre-o-totvs-construcao-gestao-de-shopping-center/">↗</a> <a href="https://www.mrisoftware.com/solutions/lease-management-software/">↗</a>. Yuzo lê e julga; não registra, não cobra, não lembra.<div class="ok">✓ evitado</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="notyuzo">
+  <div class="wrap">
+    <div class="kicker">Por que isso é Yuzo — e não um BI, nem uma sala de controle</div>
+    <h2>Dashboards respondem "o que aconteceu". Estes jobs respondem "que posição eu assumo — e me mostre a evidência".</h2>
+    <p class="lead">A cadeira de dashboard está ocupada: Yardi vende painel de risco de lojista, MRI vende orçamento com variância, TOTVS vende o Mapa de Cobrança <a href="https://www.yardi.com/blog/enhancing-retail-operations-with-yardis-retail-manager/">↗</a> <a href="https://rea.co/mri-software-property-management-features-guide/">↗</a> <a href="https://produtos.totvs.com/ficha-tecnica/tudo-sobre-o-totvs-construcao-gestao-de-shopping-center/">↗</a>. E a sala de controle não é o produto: "tempo real" aqui é o julgamento acompanhar a cadência documental do shopping — nada mais rápido, nada com sensor.</p>
+    <div class="northgrid">
+      <div class="card">
+        <h3>A máquina já existe no repo — e ela tem formato de julgamento</h3>
+        <p class="small"><strong>Orgs/workspaces + knowledge garden</strong> guardam o corpus (contratos, exports, fechamentos) — mesma postura de ingestão do tax-br hoje. <strong>Packs verticais</strong> são config + conteúdo, não fork (<code>verticals/pack-schema.ts</code>; law-br, tax-br, tax-brz no ar) — malls-br é a quarta instância. <strong>Conductor</strong> orquestra o multi-passo (ler cláusula → cruzar ledger → benchmark → redigir posição) (<code>lib/conductor/</code>). <strong>Agents</strong> são analistas com charter, tick barato, LLM só quando algo mudou (<code>docs/agents-rfc.md</code>): quando o export mensal chega, o agente re-julga e só interrompe se a posição mudou. <em>Agentes produzem julgamentos, não lembretes.</em></p>
+      </div>
+      <div class="card">
+        <h3>O formato já foi construído uma vez</h3>
+        <p class="small">O tax-br é radar → tese com valor recuperável → dossiê. O Job 1 é a mesma forma com o ERP como fonte e o lojista como contraparte: <strong>posição com número, sustentada por documentos</strong>. E o fine-tuning (Forge) compõe: um modelo afinado em linguagem de contrato de shopping brasileiro (faixas, CTO, fundo promocional, escalonamento) e nos formatos de export do ERP nacional é um ativo que nenhum BI acumula.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="out">
+  <div class="wrap">
+    <div class="kicker">Fora do v1 — explícito</div>
+    <h2>O que esta foto não é</h2>
+    <div class="outgrid">
+      <div class="outitem"><b>Watches / alertas / calendário.</b> Nada de 90/60/30 — o SAP RE-FX entrega lembrete de renovação como checkbox <a href="https://community.sap.com/t5/financial-management-blog-posts-by-members/refx-processing-real-estate-contracts/ba-p/13208601">↗</a>.</div>
+      <div class="outitem"><b>Sala de controle, mural de mapas, IoT/CCTV, telemetria ao vivo.</b> A unidade de trabalho é julgamento sobre documento; "tempo real" é a cadência dos próprios documentos.</div>
+      <div class="outitem"><b>Entrada de dados / sistema de registro.</b> Yuzo não escreve de volta; faturamento errado gera dossiê, não linha corrigida.</div>
+      <div class="outitem"><b>Substituir TOTVS/Yardi/MRI/SAP.</b> Ler exports primeiro; API talvez depois.</div>
+      <div class="outitem"><b>App lojista / JV (Path E) e app de consumidor/fidelidade/mídia ops.</b> As casas mantêm isso dentro (Multi, helloo <a href="https://oglobo.globo.com/economia/noticia/2025/11/26/na-palma-da-mao-shoppings-se-rendem-a-inteligencia-digital-em-busca-de-engajamento.ghtml">↗</a>).</div>
+      <div class="outitem"><b>Comprar BPO / firma de auditoria; success-fee-only.</b> Antipadrões nomeados do paper.</div>
+    </div>
+    <p class="small" style="margin-top:14px"><strong>Não está fora (mudança vs a foto anterior):</strong> a ótica FII. Vender <em>para</em> FIIs é contrato posterior; produzir a visão FII é output do Job 3 no v1, porque a administradora precisa dela para manter o mandato.</p>
+  </div>
+</section>
+
+<section id="questions">
+  <div class="wrap">
+    <div class="kicker">Só o CEO responde</div>
+    <h2>Perguntas abertas</h2>
+    <ol class="qs">
+      <li><strong>Quanta responsabilidade de P&amp;L assumimos em contrato sobre receita/m²?</strong> Faixa de lift comprometida (a escada 1/2/3/5/10%) com penalidade, ou metas sem dente?</li>
+      <li><strong>Qual é a primeira administradora nomeada?</strong> Multi-shopping, mid-tail, base TOTVS — a escolha define quais formatos de export o pack aprende primeiro.</li>
+      <li><strong>Âncora de preço:</strong> qual razão fee-fixo/performance sinaliza skin in the game a um comprador de margem fina sem cair no success-fee-only?</li>
+      <li><strong>Export vs conector:</strong> em que prova investimos em integração TOTVS — aceitando dependência de termos de parceria no mercado-núcleo deles?</li>
+      <li><strong>A postura de auditor:</strong> o Job 1 põe o Yuzo como auditor do landlord contra lojistas — com a plataforma fiscal de 2026 tornando divergências prováveis <a href="https://revistashoppingcenters.com.br/artigo/reforma-tributaria-nova-dinamica-fiscal/">↗</a>. Confortável como primeira impressão da marca, dado que o Path E vai querer a confiança do lojista?</li>
+      <li><strong>Quando o FII vira cliente direto?</strong> Com duas administradoras rodando, Yuzo detém benchmark cross-operador que um fundo pagaria — de quem são os dados que treinam o benchmark?</li>
+      <li><strong>Brazil-only ou Brazil-first?</strong> Taxonomia de cláusulas, índices, CTO e o vento fiscal de 2026 são fossos brasileiros — e limitam o mercado a ~658 shoppings <a href="https://valor.globo.com/empresas/noticia/2026/02/04/shoppings-do-pais-tem-crescimento-magro-em-2025-e-mais-da-metade-ja-esta-localizada-fora-das-capitais.ghtml">↗</a>.</li>
+      <li><strong>Sequenciamento vs tax-br:</strong> mesma máquina, corpus e ingestão novos — antes ou depois de o tax-br ter referência pagante?</li>
+    </ol>
+  </div>
+</section>
+
+<section id="sources">
+  <div class="wrap">
+    <div class="kicker">Fontes</div>
+    <h2>Tudo que tem número tem link</h2>
+    <ul class="srcs">
+      <li><strong>Iguatemi 2T26</strong> — release com DRE gerencial linha a linha, Aluguel/m², pro forma por linha: <a href="https://investidor10.com.br/acoes/link_comunicado/IGTI3/46858/">release</a> · <a href="https://investidor10.com.br/acoes/link_comunicado/IGTI3/46857/">teleconferência</a> · <a href="https://gazetamercantil.com/iguatemi-igti11-lucro-resultados-segundo-trimestre-2026">Gazeta Mercantil</a></li>
+      <li><strong>Multiplan 2T26</strong> — linhas de receita: <a href="https://renovainvest.com.br/blog/multiplan-2t26/">Renova Invest</a> · <a href="https://www.estadao.com.br/einvestidor/cenarios-e-mercado/lucro-liquido-da-multiplan-mult3-salta-617-e-atinge-r-4274-milhoes-no-2t26/">Estadão</a> · <a href="https://timesbrasil.com.br/brasil/multiplan-tem-lucro-de-r-427-milhoes-no-trimestre-e-registra-terceiro-maior-resultado-da-historia/">Times Brasil</a> · CFO sobre espaço para subir aluguéis: <a href="https://www.bloomberglinea.com.br/negocios/multiplan-antecipa-credito-de-r-253-milhoes-antes-da-reforma-tributaria-diz-cfo/">Bloomberg Línea</a> · aluguel complementar como driver: <a href="https://www.empiricus.com.br/artigos/investimentos/multiplan-mult3-operacao-no-2t26-mostra-se-consistente-com-impulso-de-efeitos-nao-recorrentes-jtak/">Empiricus</a></li>
+      <li><strong>Allos 2T26</strong> — linhas de receita e mídia 10,6%: <a href="https://www.estadao.com.br/einvestidor/cenarios-e-mercado/allos-alos3-aumenta-lucro-em-58-e-colhe-resultados-de-aposta-em-midia-e-eficiencia/">Estadão</a> · <a href="https://timesbrasil.com.br/empresas-e-negocios/lucro-da-allos-salta-para-r-294-milhoes-no-segundo-trimestre-alta-de-577/">Times Brasil</a> · <a href="https://www.prnewswire.com/br/comunicados-para-a-imprensa/ffo-acelera-no-2t26-e-cresce-12-302845579.html">release oficial (PRNewswire)</a></li>
+      <li><strong>SYN 2T26</strong> — margem ex-Park Place: <a href="https://visnoinvest.com.br/news/14818/syn-prop-tech-syne3-registra-lucro-de-r-54-mi-no-2t26">Visno Invest</a> · <a href="https://www.moneytimes.com.br/syn-syne3-lucro-liquido-cai-672-no-2t26-a-r-54-milhoes-ebitda-sobe-272-igdl/">Money Times</a></li>
+      <li><strong>Setor (Abrasce 2025)</strong> — R$ 200,9 bi, 658 shoppings, &gt;60% pequenos/médios: <a href="https://valor.globo.com/empresas/noticia/2026/02/04/shoppings-do-pais-tem-crescimento-magro-em-2025-e-mais-da-metade-ja-esta-localizada-fora-das-capitais.ghtml">Valor</a> · <a href="https://istoedinheiro.com.br/faturamento-dos-shoppings-cresce-12-em-2025-para-r-2009-bi-diz-abrasce">ISTOÉ Dinheiro</a> · inadimplência 4,3% e ocupação 95,4%: <a href="https://www.cnnbrasil.com.br/economia/faturamento-dos-shoppings-cresce-12-em-2025-para-r-2009-bi-diz-abrasce/">CNN Brasil</a> · <a href="https://www.hnt.com.br/economia/faturamento-dos-shoppings-cresce-12-em-2025-para-r-2009-bi-diz-abrasce/534569">HiperNotícias</a></li>
+      <li><strong>Subdeclaração e direito de auditoria (Brasil)</strong> — doutrina: <a href="https://jus.com.br/artigos/30217/locacao-em-shopping-center-e-fiscalizacao-sobre-o-faturamento-do-lojista/3">Jus.com.br</a> · reforma tributária 2026: <a href="https://revistashoppingcenters.com.br/artigo/reforma-tributaria-nova-dinamica-fiscal/">Revista Shopping Centers</a></li>
+      <li><strong>Sistemas de registro (não reconstruir)</strong> — <a href="https://produtos.totvs.com/ficha-tecnica/tudo-sobre-o-totvs-construcao-gestao-de-shopping-center/">TOTVS Gestão de Shopping</a> · <a href="https://tdn.totvs.com/pages/viewpage.action?pageId=344463708">TOTVS TDN aluguel complementar</a> · <a href="https://www.totvs.com/blog/gestao-para-construcao/administracao-de-shopping/">TOTVS Portal do Faturamento Diário</a> · <a href="https://www.yardi.com/product/voyager-commercial/">Yardi Voyager</a> · <a href="https://www.bcsolut.com/resources/commercialcafe-tenant-portal-guide">CommercialCafe</a> · <a href="https://www.yardi.com/blog/enhancing-retail-operations-with-yardis-retail-manager/">Yardi Retail Manager</a> · <a href="https://www.mrisoftware.com/solutions/lease-management-software/">MRI</a> · <a href="https://www.mrisoftware.com/wp-content/uploads/2022/05/MRI-Software-LLC-and-Affilaited-Companies-Functional-Specifications_5_22.pdf">MRI spec</a> · <a href="https://rea.co/mri-software-property-management-features-guide/">MRI guia</a> · <a href="https://community.sap.com/t5/financial-management-blog-posts-by-members/refx-processing-real-estate-contracts/ba-p/13208601">SAP RE-FX</a> · <a href="https://community.sap.com/t5/financial-management-q-a/sales-based-rental-agreements-fxre/qaq-p/11015375">SAP grading</a></li>
+      <li><strong>Stacks próprias das operadoras</strong> — <a href="https://www.multiplan.com.br/dicas-e-novidades/post/multiplan-unifica-marca-multi-e-reforca-experienci/">Multi (Multiplan)</a> · <a href="https://mercadoeconsumo.com.br/11/06/2025/shopping-centers/multiplan-lanca-ferramenta-de-inteligencia-de-dados-para-fortalecer-relacao-com-lojistas/">Conheça seus Clientes</a> · <a href="https://oglobo.globo.com/economia/noticia/2025/11/26/na-palma-da-mao-shoppings-se-rendem-a-inteligencia-digital-em-busca-de-engajamento.ghtml">O Globo — apps como plataformas de dados</a></li>
+      <li><strong>Comparáveis do horizonte futuro (mercado EUA; só formato de produto)</strong> — <a href="https://cfsnnn.com/">CFS</a> · <a href="https://www.placer.ai/solutions/cre">Placer.ai CRE</a></li>
+      <li><strong>Ótica FII</strong> — <a href="https://pt.scribd.com/document/980518055/Relatorio-Gerencial-Outubro">XP Malls (relatório gerencial)</a> · <a href="https://capitaniafii.com.br/wp-content/uploads/CPSH11/rel_mensal/2026/CPSH11_RMG_01_2026.pdf">Capitânia CPSH11</a> · <a href="https://marcelofayh.com.br/fii-de-shopping-2/">NOI/m² como métrica</a> · <a href="https://renovainvest.com.br/blog/como-funcionam-os-fundos-imobiliarios-de-shopping-centers/">Renova Invest</a> · <a href="https://www.nordinvestimentos.com.br/blog/noi-net-operating-income/">Nord</a></li>
+      <li><strong>Interno</strong> — paper "AI Value Partner" (ago 2026) · repo: <code>verticals/pack-schema.ts</code>, <code>docs/vertical-packs.md</code>, <code>docs/agents-rfc.md</code>, <code>lib/conductor/</code>, <code>lib/tax/client-list.ts</code></li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p class="tiny">RESEARCH-MALLS-INTEL.html · par visual do RESEARCH-MALLS-INTEL.md (a foto travada) · research only, sem código de produto · estatísticas de leakage do mercado americano foram removidas como fatos-Brasil; o problema de subdeclaração está evidenciado apenas com fontes brasileiras.</p>
+  </div>
+</footer>
+
+</body>
+</html>
